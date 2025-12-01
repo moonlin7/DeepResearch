@@ -27,14 +27,15 @@ fi
 ######################################
 
 echo "Starting VLLM servers..."
-CUDA_VISIBLE_DEVICES=0 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6001 --disable-log-requests &
-CUDA_VISIBLE_DEVICES=1 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6002 --disable-log-requests &
-CUDA_VISIBLE_DEVICES=2 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6003 --disable-log-requests &
-CUDA_VISIBLE_DEVICES=3 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6004 --disable-log-requests &
-CUDA_VISIBLE_DEVICES=4 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6005 --disable-log-requests &
-CUDA_VISIBLE_DEVICES=5 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6006 --disable-log-requests &
-CUDA_VISIBLE_DEVICES=6 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6007 --disable-log-requests &
-CUDA_VISIBLE_DEVICES=7 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6008 --disable-log-requests &
+
+# Comma-separated GPU IDs, e.g. "0,1,2,3" for 4x A100. Defaults to 4 GPUs.
+IFS=',' read -ra GPU_LIST <<< "${GPU_IDS:-0,1,2,3}"
+
+for idx in "${!GPU_LIST[@]}"; do
+    gpu_id="${GPU_LIST[$idx]}"
+    port=$((6001 + idx))
+    CUDA_VISIBLE_DEVICES="$gpu_id" vllm serve $MODEL_PATH --host 0.0.0.0 --port "$port" --disable-log-requests &
+done
 
 #######################################################
 ### 2. Waiting for the server port to be ready  ###
@@ -43,8 +44,11 @@ CUDA_VISIBLE_DEVICES=7 vllm serve $MODEL_PATH --host 0.0.0.0 --port 6008 --disab
 timeout=6000
 start_time=$(date +%s)
 
-main_ports=(6001 6002 6003 6004 6005 6006 6007 6008)
-echo "Mode: All ports used as main model"
+main_ports=()
+for idx in "${!GPU_LIST[@]}"; do
+    main_ports+=($((6001 + idx)))
+done
+echo "Mode: Using ${#GPU_LIST[@]} GPUs across ports: ${main_ports[*]}"
 
 declare -A server_status
 for port in "${main_ports[@]}"; do

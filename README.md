@@ -99,7 +99,8 @@ cp .env.example .env
 
 Edit the `.env` file and provide your actual API keys and configuration values:
 
-- **SERPER_KEY_ID**: Get your key from [Serper.dev](https://serper.dev/) for web search and Google Scholar
+- **SEARCH_API_URL**: Endpoint for your self-hosted search service
+- **GPU_IDS**: Comma-separated GPU IDs for vLLM servers (defaults to `0,1,2,3` for four GPUs)
 - **JINA_API_KEYS**: Get your key from [Jina.ai](https://jina.ai/) for web page reading
 - **API_KEY/API_BASE**: OpenAI-compatible API for page summarization from [OpenAI](https://platform.openai.com/)
 - **DASHSCOPE_API_KEY**: Get your key from [Dashscope](https://dashscope.aliyun.com/) for file parsing
@@ -168,6 +169,28 @@ bash run_react_infer.sh
 ---
 
 With these steps, you can fully prepare the environment, configure the dataset, and run the model. For more details, consult the inline comments in each script or open an issue.
+
+### 5.1 Run a single ad-hoc query (e.g., `蜜雪冰城加盟`)
+
+If you just want to try one question instead of a dataset, you can launch a single vLLM server and call the helper script:
+
+1) Start vLLM (replace `/path/to/model` with your weights):
+
+```bash
+CUDA_VISIBLE_DEVICES=0 vllm serve /path/to/model --host 0.0.0.0 --port 6001 &
+```
+
+2) Run the single-query script with your question and search endpoint configured in `.env` (only `SEARCH_API_URL` is required for the custom search):
+
+```bash
+python inference/run_single_query.py \
+  --model /path/to/model \
+  --question "蜜雪冰城加盟" \
+  --port 6001 \
+  --save_path outputs/mxbxc_join.json
+```
+
+The script prints the full ReAct trace to stdout and, if `--save_path` is provided, stores the raw JSON result for later review.
 
 ### 6. You can use OpenRouter's API to call our model
 

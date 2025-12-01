@@ -15,26 +15,15 @@ from qwen_agent.tools import BaseTool
 from qwen_agent.utils.utils import format_as_text_message, merge_generate_cfgs
 from prompt import *
 import time
-import asyncio
 
-from tool_file import *
-from tool_scholar import *
-from tool_python import *
 from tool_search import *
-from tool_visit import *
 
 OBS_START = '<tool_response>'
 OBS_END = '\n</tool_response>'
 
 MAX_LLM_CALL_PER_RUN = int(os.getenv('MAX_LLM_CALL_PER_RUN', 100))
 
-TOOL_CLASS = [
-    FileParser(),
-    Scholar(),
-    Visit(),
-    Search(),
-    PythonInterpreter(),
-]
+TOOL_CLASS = [Search()]
 TOOL_MAP = {tool.name: tool for tool in TOOL_CLASS}
 
 import random
@@ -226,22 +215,9 @@ class MultiTurnReactAgent(FnCallAgent):
         return result
 
     def custom_call_tool(self, tool_name: str, tool_args: dict, **kwargs):
-        if tool_name in TOOL_MAP:
-            tool_args["params"] = tool_args
-            if "python" in tool_name.lower():
-                result = TOOL_MAP['PythonInterpreter'].call(tool_args)
-            elif tool_name == "parse_file":
-                params = {"files": tool_args["files"]}
-                
-                raw_result = asyncio.run(TOOL_MAP[tool_name].call(params, file_root_path="./eval_data/file_corpus"))
-                result = raw_result
-
-                if not isinstance(raw_result, str):
-                    result = str(raw_result)
-            else:
-                raw_result = TOOL_MAP[tool_name].call(tool_args, **kwargs)
-                result = raw_result
-            return result
-
-        else:
+        if tool_name not in TOOL_MAP:
             return f"Error: Tool {tool_name} not found"
+
+        tool_args["params"] = tool_args
+        result = TOOL_MAP[tool_name].call(tool_args, **kwargs)
+        return result

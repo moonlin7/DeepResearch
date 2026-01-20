@@ -17,7 +17,7 @@
 <p align="center">
 <p align="center">
 🤗 <a href="https://huggingface.co/Alibaba-NLP/Tongyi-DeepResearch-30B-A3B" target="_blank">HuggingFace</a> ｜
-<img src="./assets/tongyi.png" width="14px" style="display:inline;"> <a href="https://modelscope.cn/models/iic/Tongyi-DeepResearch-30B-A3B" target="_blank">ModelScope</a> |  💬 <a href="./assets/wechat_new.jpg">WeChat(微信)</a> 📰 <a href="https://tongyi-agent.github.io/blog/introducing-tongyi-deep-research/">Blog</a> | 📑 <a href="https://arxiv.org/pdf/2510.24701">Paper</a>
+<img src="./assets/tongyi.png" width="14px" style="display:inline;"> <a href="https://modelscope.cn/models/iic/Tongyi-DeepResearch-30B-A3B" target="_blank">ModelScope</a> | 💬 <a href="./assets/wechat_new.jpg">WeChat(微信)</a> | 📰 <a href="https://tongyi-agent.github.io/blog/introducing-tongyi-deep-research/">Blog</a> | 📑 <a href="https://arxiv.org/pdf/2510.24701">Paper</a>
 
 <p align="center">
 <a href="https://trendshift.io/repositories/14895" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14895" alt="Alibaba-NLP%2FDeepResearch | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
@@ -235,6 +235,7 @@ Tongyi DeepResearch also has an extensive deep research agent family. You can fi
 [15] [Repurposing Synthetic Data for Fine-grained Search Agent Supervision](https://arxiv.org/pdf/2510.24694)<br>
 [16] [ParallelMuse: Agentic Parallel Thinking for Deep Information Seeking](https://arxiv.org/pdf/2510.24698)<br>
 [17] [AgentFrontier: Expanding the Capability Frontier of LLM Agents with ZPD-Guided Data Synthesis](https://arxiv.org/pdf/2510.24695)<br>
+[18] [Nested Browser-Use Learning for Agentic Information Seeking](https://arxiv.org/pdf/2512.23647)<br>
 
 ## 🌟 Misc
 
